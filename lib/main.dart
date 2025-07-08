@@ -1,8 +1,18 @@
-import 'package:amaris_consulting/features/welcome/page/welcome-page.dart';
+import 'package:amaris_consulting/features/welcome/bloc/welcome_bloc.dart';
+import 'package:amaris_consulting/features/welcome/page/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  // Multi Bloc Provider
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<WelcomeBloc>(
+        create: (BuildContext context) => WelcomeBloc()
+      )
+    ],
+    child: const MyApp()
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -12,11 +22,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Wallet FPV - FIC',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: WelcopmePage(),
+      home: WelcomePage(),
     );
   }
 }
