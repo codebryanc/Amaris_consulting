@@ -15,4 +15,8 @@ class WalletBll {
   double getWalletValue() {
     return WalletDal().getWalletValue();
   }
+
+  void setWalletValue(double walletValue) {
+    WalletDal().setWalletValue(walletValue);
+  } 
 }

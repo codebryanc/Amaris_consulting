@@ -1,3 +1,4 @@
+import 'package:amaris_consulting/core/tools/currency_tool.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,8 @@ class _WelcomePageState extends State<WelcomePage> {
 
               // Your current wallet
               const Spacer(),
-              Text(" \$ 300", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue)),
+              // Wallet value
+              showCurrentWalletValue(context)              
             ]
           )
         ),
@@ -45,6 +47,25 @@ class _WelcomePageState extends State<WelcomePage> {
       body: const Center(
         child: Text("Bienvenido", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
       )
+    );
+  }
+
+  // [Methods]
+  Widget showCurrentWalletValue(BuildContext context) {
+    return BlocBuilder<WelcomeBloc, WelcomeState>(
+      buildWhen: (previous, current) => current is WalletLoaded,
+      builder: (context, state) {
+        
+        if(state is WalletLoaded) {
+          return Text(
+            CurrencyTool().castToCurrency(state.walletCurrentValue),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue)
+          );
+        }
+        else {
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 }

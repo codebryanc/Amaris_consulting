@@ -1,3 +1,5 @@
+import 'package:amaris_consulting/dal/data/wallet_local_datasource.dart';
+
 class WalletDal {
   // [Properties]
   static final WalletDal _instance = WalletDal._internal();
@@ -12,6 +14,10 @@ class WalletDal {
   
   // [Methods]
   double getWalletValue() {
-    return 0.0;
+    return WalletLocalDatasource().getCurrentWalletValue();
   }
+
+  void setWalletValue(double walletValue) {
+    WalletLocalDatasource().setCurrentWalletValue(walletValue);
+  } 
 }
