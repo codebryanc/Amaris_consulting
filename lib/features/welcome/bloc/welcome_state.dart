@@ -9,14 +9,15 @@ final class WelcomeInitial extends WelcomeState {}
 final class WalletLoaded extends WelcomeState {
   final double walletCurrentValue;
   final Color walletColor;
-
+  
   WalletLoaded(this.walletCurrentValue, this.walletColor);
 }
 
 final class WalletFundsLoaded extends WelcomeState {
   final List<FundEntity> funds;
-
-  WalletFundsLoaded(this.funds);
+  final bool showTransactionList;
+  
+  WalletFundsLoaded(this.funds, this.showTransactionList);
 }
 
 final class InsufficientFundsError extends WelcomeState {}

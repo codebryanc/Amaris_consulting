@@ -11,6 +11,9 @@ part 'welcome_event.dart';
 part 'welcome_state.dart';
 
 class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
+  // [properties]
+  static bool showTransactionList = true;
+
   WelcomeBloc() : super(WelcomeInitial()) {
     on<DoGetWalletBalance>(_onDoGetWallet);
     on<DoGetFundsAvailable>(_onGetFunds);
@@ -19,6 +22,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     on<DoChangeFundNotificationType>(_onDoChangeFundNotificationType);
     on<DoChangeAllFundNotificationType>(_onDoChangeAllFundNotificationType);
     on<DoClearAllFundNotificationType>(_onDoClearAllFundNotificationType);
+    on<DoToggleTransactionList>(_onDoToggleTransactionList);
   }
 
   // [Methods]
@@ -35,7 +39,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     DoGetFundsAvailable event,
     Emitter<WelcomeState> emit,
   ) async {
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
   }
 
   Future<void> _onDoChangeSub(
@@ -52,7 +56,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
       double currentWalletValue = WalletDal().updateWalletSubscribe(event.fund.isSubscribed!, event.fund.minAmount!);
 
       // 3. Update button appearance [UX]
-      emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
+      emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
 
       // 3.1 Update UX - Wallet balance
       emit(WalletLoaded(currentWalletValue, getCurrentWalletColor(currentWalletValue)));
@@ -81,7 +85,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     FundDal().updateFundByNotificationType(event.fund, event.messageType);
 
     // 2. Update button appearance [UX]
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
   }
 
   Future<void> _onDoChangeAllFundNotificationType(DoChangeAllFundNotificationType event, Emitter<WelcomeState> emit) async {
@@ -89,7 +93,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     FundDal().updateAllFundByNotificationType(event.messageType);
 
     // 2. Update button appearance [UX]
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
   }
 
   Future<void> _onDoClearAllFundNotificationType(DoClearAllFundNotificationType event, Emitter<WelcomeState> emit) async {
@@ -97,7 +101,13 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     FundDal().updateAllFundByNotificationType(null);
 
     // 2. Update button appearance [UX]
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
+  }
+
+  Future<void> _onDoToggleTransactionList(DoToggleTransactionList event, Emitter<WelcomeState> emit) async {
+    showTransactionList = !showTransactionList;
+
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
   }
 
   // [Functions]

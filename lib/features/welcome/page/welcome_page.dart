@@ -1,7 +1,7 @@
-import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
+import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
 import 'package:amaris_consulting/core/tools/currency_tool.dart';
 import 'package:amaris_consulting/features/common/widget/loading_widget.dart';
 import 'package:amaris_consulting/features/common/widget/notification_widget.dart';
@@ -52,15 +52,19 @@ class _WelcomePageState extends State<WelcomePage> {
         children: [
           // Notification widget for insufficient funds
           BlocListener<WelcomeBloc, WelcomeState>(
-            listenWhen: (previous, current) => current is WalletAskNotificationMethod,
+            listenWhen: (previous, current) =>
+                current is WalletAskNotificationMethod,
             listener: (context, state) {
-              if(state is WalletAskNotificationMethod) {
+              if (state is WalletAskNotificationMethod) {
                 FundNotificationTypeWidget().showDialogNotificationMethod(
                   context,
                   (FundNotificationMethodType type) => {
                     // Update fund notification type
-                    context.read<WelcomeBloc>().add(DoChangeFundNotificationType(state.fund, type))
-                });
+                    context.read<WelcomeBloc>().add(
+                      DoChangeFundNotificationType(state.fund, type),
+                    ),
+                  },
+                );
               }
             },
             child: BlocBuilder<WelcomeBloc, WelcomeState>(
@@ -100,13 +104,16 @@ class _WelcomePageState extends State<WelcomePage> {
               children: [
                 // Choose notification method
                 ElevatedButton(
-                  onPressed: (){
+                  onPressed: () {
                     FundNotificationTypeWidget().showDialogNotificationMethod(
                       context,
                       (FundNotificationMethodType type) => {
                         // Update fund notification type
-                        context.read<WelcomeBloc>().add(DoChangeAllFundNotificationType(type))
-                    });
+                        context.read<WelcomeBloc>().add(
+                          DoChangeAllFundNotificationType(type),
+                        ),
+                      },
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -122,17 +129,23 @@ class _WelcomePageState extends State<WelcomePage> {
                   ),
                   child: Text(
                     "Elegir metodo de notificaciones",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black)
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
                 SizedBox(width: 8),
                 // Remove all previous selections
                 IconButton(
                   onPressed: () {
-                    context.read<WelcomeBloc>().add(DoClearAllFundNotificationType());
+                    context.read<WelcomeBloc>().add(
+                      DoClearAllFundNotificationType(),
+                    );
                   },
                   icon: Icon(Icons.delete, color: Colors.red[400]),
-                )
+                ),
               ],
             ),
           ),
@@ -155,16 +168,14 @@ class _WelcomePageState extends State<WelcomePage> {
           ),
           // Choose notification method
           ElevatedButton(
-            onPressed: (){
-             
+            onPressed: () {
+              // Change transaction visubility
+              context.read<WelcomeBloc>().add(DoToggleTransactionList());
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -172,15 +183,28 @@ class _WelcomePageState extends State<WelcomePage> {
             ),
             child: Text(
               "Ver historial de transacciones",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.white)
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+                color: Colors.white,
+              ),
             ),
           ),
           // Fund list
-          Padding(
-            padding: const EdgeInsets.all(40),
-            child: Card(
-              child: FundsWidget()
-            ),
+          BlocBuilder<WelcomeBloc, WelcomeState>(
+            buildWhen: (previous, current) => current is WalletFundsLoaded,
+            builder: (context, state) {
+              if(state is WalletFundsLoaded) {
+                if(state.showTransactionList) {
+                  return Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Card(child: FundsWidget()),
+                  );
+                }
+              }
+
+              return Container();
+            },
           ),
         ],
       ),

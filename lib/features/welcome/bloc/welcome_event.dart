@@ -28,3 +28,5 @@ class DoChangeAllFundNotificationType extends WelcomeEvent {
 }
 
 class DoClearAllFundNotificationType extends WelcomeEvent {}
+
+class DoToggleTransactionList extends WelcomeEvent {}
