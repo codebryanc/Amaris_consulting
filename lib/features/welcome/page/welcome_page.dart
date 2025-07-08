@@ -166,44 +166,51 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
             ),
           ),
-          // Choose notification method
-          ElevatedButton(
-            onPressed: () {
-              // Change transaction visubility
-              context.read<WelcomeBloc>().add(DoToggleTransactionList());
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              elevation: 2,
-            ),
-            child: Text(
-              "Ver historial de transacciones",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                color: Colors.white,
-              ),
-            ),
-          ),
           // Fund list
           BlocBuilder<WelcomeBloc, WelcomeState>(
             buildWhen: (previous, current) => current is WalletFundsLoaded,
             builder: (context, state) {
+              bool showTransactionList = true;
               if(state is WalletFundsLoaded) {
-                if(state.showTransactionList) {
-                  return Padding(
-                    padding: const EdgeInsets.all(40),
-                    child: Card(child: FundsWidget()),
-                  );
-                }
+                showTransactionList = state.showTransactionList;
               }
 
-              return Container();
+              return Column(
+                children: [
+                  // Choose current information
+                  ElevatedButton(
+                    onPressed: () {
+                      // Change transaction visibility
+                      context.read<WelcomeBloc>().add(DoToggleTransactionList());
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      elevation: 2,
+                    ),
+                    child: Text(
+                      showTransactionList ? "Ver historial de transacciones" : "Ver fondos para clientes",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // Transaction
+                  Visibility(
+                    visible: showTransactionList,
+                    child: Padding(
+                      padding: const EdgeInsets.all(40),
+                      child: Card(child: FundsWidget()),
+                    )
+                  ),
+                ],
+              );
             },
           ),
         ],
