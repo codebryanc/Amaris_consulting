@@ -1,4 +1,4 @@
-import 'package:amaris_consulting/dal/data/wallet_local_datasource.dart';
+import 'package:amaris_consulting/dal/wallet/data/wallet_local_datasource.dart';
 
 class WalletDal {
   // [Properties]

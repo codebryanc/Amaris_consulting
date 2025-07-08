@@ -1,4 +1,4 @@
-import 'package:amaris_consulting/dal/domain/wallet_dal.dart';
+import 'package:amaris_consulting/dal/wallet/domain/wallet_dal.dart';
 
 class WalletBll {
   // [Properties]

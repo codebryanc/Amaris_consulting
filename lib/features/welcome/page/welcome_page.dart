@@ -1,4 +1,6 @@
 import 'package:amaris_consulting/core/tools/currency_tool.dart';
+import 'package:amaris_consulting/features/common/widget/loading_widget.dart';
+import 'package:amaris_consulting/features/welcome/widget/funds_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +19,11 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     super.initState();
 
-    context.read<WelcomeBloc>().add(DoGetWallet());
+    // Current wallet balance
+    context.read<WelcomeBloc>().add(DoGetWalletBalance());
+
+    // Get Fund available
+    context.read<WelcomeBloc>().add(DoGetFundsAvailable());
   }
 
   @override
@@ -44,8 +50,26 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text("Bienvenido", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      body: Column(
+        children: [
+          // Welcome title
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.only(top : 25),
+              child: Text("Bienvenido", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, bottom: 32),
+            child: Text("Acá encuentras un listado sobre el manejo de fondos (FPV/FIC) para clientes BTG",
+              style: TextStyle(fontSize: 14,
+                fontWeight: FontWeight.normal,
+                color: Colors.black)
+              ),
+          ),
+          // Fund list
+          FundsWidget()
+        ],
       )
     );
   }
@@ -59,11 +83,11 @@ class _WelcomePageState extends State<WelcomePage> {
         if(state is WalletLoaded) {
           return Text(
             CurrencyTool().castToCurrency(state.walletCurrentValue),
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue)
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: state.walletColor)
           );
         }
         else {
-          return CircularProgressIndicator();
+          return LoadingWidget().getLoading();
         }
       },
     );

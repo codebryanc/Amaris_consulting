@@ -1,0 +1,4 @@
+enum FundCategoryType {
+  fpv,
+  fic
+}
