@@ -2,6 +2,10 @@
 
 Una aplicación Flutter interactiva para el manejo de fondos de inversión (FPV/FIC) desarrollada como prueba técnica para Amaris Consulting.
 
+¡También lo puedes ver en!
+
+https://www.youtube.com/watch?v=mn7WB-4wY1Q
+
 ## 📋 Descripción del Proyecto
 
 Esta aplicación permite a los usuarios gestionar sus inversiones en fondos BTG de manera intuitiva y completa. Los usuarios pueden suscribirse a fondos, cancelar participaciones, consultar historial de transacciones y gestionar sus preferencias de notificación.
