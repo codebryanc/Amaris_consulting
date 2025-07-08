@@ -17,7 +17,15 @@ class WalletDal {
     return WalletLocalDatasource().getCurrentWalletValue();
   }
 
-  void setWalletValue(double walletValue) {
-    WalletLocalDatasource().setCurrentWalletValue(walletValue);
+  void updateWalletAfterSubscribe(double subscription) {
+    double walletValue = getWalletValue();
+
+    WalletLocalDatasource().setCurrentWalletValue(walletValue - subscription);
+  } 
+
+  void updateWalletAfterCancellation(double cancelValue) {
+    double walletValue = getWalletValue();
+
+    WalletLocalDatasource().setCurrentWalletValue(walletValue + cancelValue);
   } 
 }

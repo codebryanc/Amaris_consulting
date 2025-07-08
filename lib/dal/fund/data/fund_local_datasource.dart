@@ -19,6 +19,18 @@ class FundLocalDatasource {
     return _funds;
   }
 
+  bool updateFund(FundEntity editedFund) {
+    int index = _funds.indexWhere((i) => i.id == editedFund.id);
+
+    if(index != -1) {
+      _funds[index] = editedFund;
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   final List<FundEntity> _funds = [
     // 1
     FundEntity(

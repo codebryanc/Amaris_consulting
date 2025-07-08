@@ -18,3 +18,9 @@ final class WalletFundsLoaded extends WelcomeState {
 
   WalletFundsLoaded(this.funds);
 }
+
+final class FundActionLoaded extends WelcomeState {
+  final FundEntity fund;
+
+  FundActionLoaded(this.fund);
+}

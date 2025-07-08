@@ -81,36 +81,41 @@ class _FundsWidgetState extends State<FundsWidget> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          // Subscribed button
-          ElevatedButton.icon(
-            onPressed: () {
-              
-            },
-            icon: Icon(
-              fund.isSubscribed! ? Icons.cancel : Icons.check_circle,
-              color: Colors.white,
-            ),
-            label: Visibility(
-              visible: thereArSpace,
-              child: Text(
-                fund.isSubscribed! ? "Cancelar" : "Suscribirse",
-                style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
+          BlocBuilder<WelcomeBloc, WelcomeState>(
+            buildWhen: (previous, current) => current is FundActionLoaded,
+            builder: (context, state) {
+              return ElevatedButton.icon(
+                onPressed: () {
+                  // Change subscription [1|0]
+                  context.read<WelcomeBloc>().add(DoChangeSub(fund));
+                },
+                icon: Icon(
+                  fund.isSubscribed! ? Icons.cancel : Icons.check_circle,
+                  color: Colors.white,
                 ),
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: fund.isSubscribed!
-                ? Colors.red
-                : const Color.fromARGB(255, 7, 119, 212),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              elevation: 2,
-            ),
+                label: Visibility(
+                  visible: thereArSpace,
+                  child: Text(
+                    fund.isSubscribed! ? "Cancelar" : "Suscribirse",
+                    style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: fund.isSubscribed!
+                    ? Colors.red
+                    : const Color.fromARGB(255, 7, 119, 212),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  elevation: 2,
+                ),
+              );
+            },
           )
         ],
       ),

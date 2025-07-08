@@ -17,4 +17,8 @@ class FundDal {
   List<FundEntity> getAvailableFunds() {
     return FundLocalDatasource().getAvailableFunds();
   }
+
+  bool updateOneFund(FundEntity editedFund) { 
+    return FundLocalDatasource().updateFund(editedFund);
+  }
 }
