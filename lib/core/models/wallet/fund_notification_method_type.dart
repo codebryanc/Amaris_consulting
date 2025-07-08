@@ -1,0 +1,4 @@
+enum FundNotificationMethodType {
+  sms,
+  email
+}

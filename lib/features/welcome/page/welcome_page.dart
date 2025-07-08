@@ -1,11 +1,12 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
+
 import 'package:amaris_consulting/core/tools/currency_tool.dart';
 import 'package:amaris_consulting/features/common/widget/loading_widget.dart';
 import 'package:amaris_consulting/features/common/widget/notification_widget.dart';
 import 'package:amaris_consulting/features/welcome/widget/funds_widget.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/material.dart';
-
 import 'package:amaris_consulting/features/welcome/bloc/welcome_bloc.dart';
+import 'package:amaris_consulting/features/welcome/widget/fund_notification_type_widget.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -47,20 +48,33 @@ class _WelcomePageState extends State<WelcomePage> {
         centerTitle: true,
       ),
       body: Column(
-        children: [   
+        children: [
           // Notification widget for insufficient funds
-          BlocBuilder<WelcomeBloc, WelcomeState>(
-            buildWhen: (previous, current) => current is InsufficientFundsError || current is ClearFundsError,
-            builder: (context, state) {
-              if (state is InsufficientFundsError) {
-                return NotificationWidget.insufficientFunds(
-                  onClose: () {
-                    context.read<WelcomeBloc>().add(ClearNotification());
-                  },
-                );
+          BlocListener<WelcomeBloc, WelcomeState>(
+            listenWhen: (previous, current) => current is WalletAskNotificationMethod,
+            listener: (context, state) {
+              if(state is WalletAskNotificationMethod) {
+                FundNotificationTypeWidget().showDialogNotificationMethod(context, state.fund);
               }
-              return const SizedBox.shrink();
             },
+            child: BlocBuilder<WelcomeBloc, WelcomeState>(
+              buildWhen: (previous, current) =>
+                  current is InsufficientFundsError ||
+                  current is ClearFundsError,
+              builder: (context, state) {
+                if (state is InsufficientFundsError) {
+                  return NotificationWidget.insufficientFunds(
+                    onClose: () {
+                      context.read<WelcomeBloc>().add(DoClearNotification());
+                    },
+                  );
+                } else if (state is ClearFundsError) {
+                  return const SizedBox.shrink();
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
           ),
           // Welcome title
           const Center(

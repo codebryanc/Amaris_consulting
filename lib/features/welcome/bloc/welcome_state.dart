@@ -19,12 +19,12 @@ final class WalletFundsLoaded extends WelcomeState {
   WalletFundsLoaded(this.funds);
 }
 
-final class FundActionLoaded extends WelcomeState {
-  final FundEntity fund;
-
-  FundActionLoaded(this.fund);
-}
-
 final class InsufficientFundsError extends WelcomeState {}
 
 final class ClearFundsError extends WelcomeState {}
+
+final class WalletAskNotificationMethod extends WelcomeState {
+  final FundEntity fund;
+
+  WalletAskNotificationMethod(this.fund);
+}

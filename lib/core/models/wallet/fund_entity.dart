@@ -1,4 +1,5 @@
 import 'package:amaris_consulting/core/models/wallet/fund_category_type.dart';
+import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
 
 class FundEntity {
   FundEntity.empty();
@@ -11,6 +12,7 @@ class FundEntity {
     this.minAmount,
     this.category,
     this.isSubscribed,
+    this.notificationMethodType
   });
 
   int? id;
@@ -20,6 +22,7 @@ class FundEntity {
   double? minAmount;
   FundCategoryType? category;
   bool? isSubscribed;
+  FundNotificationMethodType? notificationMethodType;
 
   String getCategoryName() {
     switch (category) {

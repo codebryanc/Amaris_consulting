@@ -1,9 +1,11 @@
-import 'package:amaris_consulting/core/config/environment_config.dart';
-import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
-import 'package:amaris_consulting/dal/fund/domain/fund_dal.dart';
-import 'package:amaris_consulting/dal/wallet/domain/wallet_dal.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+
+import 'package:amaris_consulting/core/config/environment_config.dart';
+import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
+import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
+import 'package:amaris_consulting/dal/fund/domain/fund_dal.dart';
+import 'package:amaris_consulting/dal/wallet/domain/wallet_dal.dart';
 
 part 'welcome_event.dart';
 part 'welcome_state.dart';
@@ -13,7 +15,8 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     on<DoGetWalletBalance>(_onDoGetWallet);
     on<DoGetFundsAvailable>(_onGetFunds);
     on<DoChangeSub>(_onDoChangeSub);
-    on<ClearNotification>(_onClearNotification);
+    on<DoClearNotification>(_onClearNotification);
+    on<DoChangeFundNotificationType>(_onDoChangeFundNotificationType);
   }
 
   // [Methods]
@@ -30,9 +33,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     DoGetFundsAvailable event,
     Emitter<WelcomeState> emit,
   ) async {
-    List<FundEntity> funds = FundDal().getAvailableFunds();
-
-    emit(WalletFundsLoaded(funds));
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
   }
 
   Future<void> _onDoChangeSub(
@@ -43,28 +44,42 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     if(canOperate(event.fund, event.fund.isSubscribed!)) {
 
       // 2. We update the subscription value [We change subscription value]
-      FundDal().updateOneFund(event.fund, !event.fund.isSubscribed!);
+      FundDal().updateFundBySubscribed(event.fund, !event.fund.isSubscribed!);
       
       // 2.1 Update the current wallet value
       double currentWalletValue = WalletDal().updateWalletSubscribe(event.fund.isSubscribed!, event.fund.minAmount!);
 
       // 3. Update button appearance [UX]
-      emit(FundActionLoaded(event.fund));
+      emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
 
       // 3.1 Update UX - Wallet balance
       emit(WalletLoaded(currentWalletValue, getCurrentWalletColor(currentWalletValue)));
     }
     else {
-      // Ups! Emit error: the customer doesn't have enough money
-      emit(InsufficientFundsError());
+      if(event.fund.notificationMethodType == null) {
+        // Please choose a Notification method
+        emit(WalletAskNotificationMethod(event.fund));
+      }
+      else {
+        // Ups! Emit error: the customer doesn't have enough money
+        emit(InsufficientFundsError());
+      }
     }
   }
 
   Future<void> _onClearNotification(
-    ClearNotification event,
+    DoClearNotification event,
     Emitter<WelcomeState> emit
   ) async {
     emit(ClearFundsError());
+  }
+
+  Future<void> _onDoChangeFundNotificationType(DoChangeFundNotificationType event, Emitter<WelcomeState> emit) async {
+    // 1. Update Fund notification type to this subscribe
+    FundDal().updateFundByNotificationType(event.fund, event.messageType);
+
+    // 2. Update button appearance [UX]
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
   }
 
   // [Functions]
@@ -84,7 +99,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     double currentBalance = WalletDal().getWalletValue();
     
     // 1. Validate if the customer has enough money and if the operation is a subscription
-    result = (currentFund.minAmount! <= currentBalance || isSubscribed);
+    result = currentFund.notificationMethodType != null && (currentFund.minAmount! <= currentBalance || isSubscribed);
 
     return result;
   }
