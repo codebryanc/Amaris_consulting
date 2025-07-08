@@ -7,15 +7,19 @@ class FundEntity {
     this.id,
     this.name,
     this.friendlyName,
+    this.shortName,
     this.minAmount,
     this.category,
+    this.isSubscribed
   });
 
   int? id;
   String? name;
   String? friendlyName;
+  String? shortName;
   double? minAmount;
   FundCategoryType? category;
+  bool? isSubscribed;
 
   String getCategoryName() {
     switch (category) {

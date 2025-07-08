@@ -19,16 +19,8 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
   // [Methods]
   Future<void> _onDoGetWallet(DoGetWalletBalance event, Emitter<WelcomeState> emit) async {
     double currentValue = WalletBll().getWalletValue();
-    Color currentWalletColor;
+    Color currentWalletColor = getCurrentWalletColor(currentValue);
 
-    // UX connects to Wallet; Logic handled in Bloc
-    if (currentValue < EnvironmentConfig.walletAtRisk) {
-      currentWalletColor = Colors.redAccent;
-    } else if (currentValue < EnvironmentConfig.walletLowBalance) {
-      currentWalletColor = Colors.orangeAccent;
-    } else {
-      currentWalletColor = Colors.green;
-    }
 
     emit(WalletLoaded(currentValue, currentWalletColor));
   }
@@ -38,4 +30,18 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
 
     emit(WalletFundsLoaded(funds));
   }
+
+  // [Functions]
+  Color getCurrentWalletColor(double currentValue) {
+    // UX connects to Wallet; Logic handled in Bloc
+    if (currentValue < EnvironmentConfig.walletAtRisk) {
+      return Colors.redAccent;
+    } else if (currentValue < EnvironmentConfig.walletLowBalance) {
+      return Colors.orangeAccent;
+    } else {
+      return Colors.green;
+    }
+  }
+
+  
 }

@@ -1,3 +1,4 @@
+import 'package:amaris_consulting/core/config/environment_config.dart';
 import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
 import 'package:amaris_consulting/core/tools/currency_tool.dart';
 import 'package:amaris_consulting/features/common/widget/loading_widget.dart';
@@ -40,33 +41,91 @@ class _FundsWidgetState extends State<FundsWidget> {
 
   // [Widget]
   Widget getFund(FundEntity fund) {
+    bool thereArSpace = thereAreWidthSpace();
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 64),
+      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: thereArSpace ? 64 : 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Name
-            Row(
-            children: [
-              Text(fund.friendlyName ?? ''),
-              const SizedBox(width: 8),
-              Text(
-              fund.getCategoryName(),
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              ),
-            ],
+          SizedBox(
+            width: thereArSpace ? 250 : 140,
+            child: Row(
+              children: [
+                // Name
+                Text(thereArSpace ? (fund.friendlyName ?? '') : (fund.shortName ?? '')),
+                const SizedBox(width: 4),
+                // Category
+                Visibility(
+                  visible: thereArSpace,
+                  child: Text(
+                    fund.getCategoryName(),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
             ),
+          ),
           // Amount
-          Text(
-            CurrencyTool().castToCurrency(fund.minAmount ?? 0),
-            style: TextStyle(fontWeight: FontWeight.bold)
+          SizedBox(
+            width: 75,
+            child: Text(
+              CurrencyTool().castToCurrency(fund.minAmount ?? 0),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.right,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          // Subscribed button
+          ElevatedButton.icon(
+            onPressed: () {
+              
+            },
+            icon: Icon(
+              fund.isSubscribed! ? Icons.cancel : Icons.check_circle,
+              color: Colors.white,
+            ),
+            label: Visibility(
+              visible: thereArSpace,
+              child: Text(
+                fund.isSubscribed! ? "Cancelar" : "Suscribirse",
+                style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: fund.isSubscribed!
+                ? Colors.red
+                : const Color.fromARGB(255, 7, 119, 212),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              elevation: 2,
+            ),
           )
         ],
       ),
     );
+  }
+
+  // [Functions]
+  bool thereAreWidthSpace() {
+    final currentWidth = MediaQuery.of(context).size.width;
+
+    if(currentWidth < EnvironmentConfig.minWindowSpace) {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 }

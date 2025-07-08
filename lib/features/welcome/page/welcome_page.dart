@@ -60,7 +60,7 @@ class _WelcomePageState extends State<WelcomePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 32),
+            padding: const EdgeInsets.only(top: 8.0, bottom: 32, left: 4, right: 4),
             child: Text("Acá encuentras un listado sobre el manejo de fondos (FPV/FIC) para clientes BTG",
               style: TextStyle(fontSize: 14,
                 fontWeight: FontWeight.normal,

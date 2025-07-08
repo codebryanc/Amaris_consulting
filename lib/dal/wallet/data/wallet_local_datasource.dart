@@ -1,7 +1,7 @@
 class WalletLocalDatasource {
   // [Properties]
   static final WalletLocalDatasource _instance = WalletLocalDatasource._internal();
-  double currentWalletValue = 100000;
+  double currentWalletValue = 500000;
 
   // [Singleton]
   factory WalletLocalDatasource() {
