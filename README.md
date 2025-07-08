@@ -154,6 +154,14 @@ flutter run
 - **Extras**: ⚠️ 25% (1/4)
 - **Completitud General**: **85%**
 
+## 📈 Cobertura de Pruebas
+
+### Reporte de Cobertura
+<img src="lib/core/assets/Coverage.png" alt="Coverage Report" width="75%">
+
+### Pruebas Unitarias
+<img src="lib/core/assets/Unit_test.png" alt="Unit Tests" width="75%">
+
 ## 🔮 Mejoras Futuras
 
 - [ ] Implementar pruebas unitarias completas
