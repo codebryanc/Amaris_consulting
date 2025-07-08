@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:amaris_consulting/core/config/environment_config.dart';
 import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
 import 'package:amaris_consulting/dal/fund/domain/fund_dal.dart';
@@ -18,49 +16,60 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
   }
 
   // [Methods]
-  Future<void> _onDoGetWallet(DoGetWalletBalance event, Emitter<WelcomeState> emit) async {
+  Future<void> _onDoGetWallet(
+    DoGetWalletBalance event,
+    Emitter<WelcomeState> emit,
+  ) async {
     double currentValue = WalletDal().getWalletValue();
 
     emit(WalletLoaded(currentValue, getCurrentWalletColor(currentValue)));
   }
 
-  Future<void> _onGetFunds(DoGetFundsAvailable event, Emitter<WelcomeState> emit) async {
+  Future<void> _onGetFunds(
+    DoGetFundsAvailable event,
+    Emitter<WelcomeState> emit,
+  ) async {
     List<FundEntity> funds = FundDal().getAvailableFunds();
 
     emit(WalletFundsLoaded(funds));
   }
 
-  Future<void> _onDoChangeSub(DoChangeSub event, Emitter<WelcomeState> emit) async {
+  Future<void> _onDoChangeSub(
+    DoChangeSub event,
+    Emitter<WelcomeState> emit,
+  ) async {
     double initWalletValue = WalletDal().getWalletValue();
     bool isSubscribedAction = event.fund.isSubscribed!;
 
-     // 1. Validate if the customer has enough money
-     if(event.fund.minAmount! <= initWalletValue) {
-      
+    // 1. Validate if the customer has enough money
+    if (event.fund.minAmount! <= initWalletValue) {
       // 2. We update the subscription value
-      event.fund.isSubscribed = !event.fund.isSubscribed! ;
+      event.fund.isSubscribed = !event.fund.isSubscribed!;
       FundDal().updateOneFund(event.fund);
-      
+
       // 2.1 Update the current wallet value
-      if(isSubscribedAction == false) {
+      if (isSubscribedAction == false) {
         WalletDal().updateWalletAfterSubscribe(event.fund.minAmount!);
-      }
-      else {
+      } else {
         WalletDal().updateWalletAfterCancellation(event.fund.minAmount!);
       }
 
       // 2.3 Read wallet result
       double currentWalletValue = WalletDal().getWalletValue();
-      
+
       // 3. Update UX - Fund action
       emit(FundActionLoaded(event.fund));
 
       // 3.1 Update UX - Wallet balance
-      emit(WalletLoaded(currentWalletValue, getCurrentWalletColor(currentWalletValue)));
-     }
-     else {
+      emit(
+        WalletLoaded(
+          currentWalletValue,
+          getCurrentWalletColor(currentWalletValue),
+        ),
+      );
+    } else {
       // Ups! Emit error: the customer doesn't have enough money
-     }
+    }
   }
 
   // [Functions]
@@ -74,5 +83,4 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
       return Colors.green;
     }
   }
- 
 }

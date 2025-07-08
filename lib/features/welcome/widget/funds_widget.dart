@@ -19,8 +19,7 @@ class _FundsWidgetState extends State<FundsWidget> {
     return BlocBuilder<WelcomeBloc, WelcomeState>(
       buildWhen: (previous, current) => current is WalletFundsLoaded,
       builder: (context, state) {
-        
-        if(state is WalletFundsLoaded) {
+        if (state is WalletFundsLoaded) {
           // Show all fund available
           return ListView.builder(
             shrinkWrap: true,
@@ -28,13 +27,11 @@ class _FundsWidgetState extends State<FundsWidget> {
             itemCount: state.funds.length,
             itemBuilder: (BuildContext context, int index) {
               return getFund(state.funds[index]);
-            }
+            },
           );
-        }
-        else {
+        } else {
           return LoadingWidget().getLoading();
         }
-
       },
     );
   }
@@ -44,7 +41,10 @@ class _FundsWidgetState extends State<FundsWidget> {
     bool thereArSpace = thereAreWidthSpace();
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: thereArSpace ? 64 : 8),
+      padding: EdgeInsets.symmetric(
+        vertical: 8.0,
+        horizontal: thereArSpace ? 64 : 8,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -54,7 +54,11 @@ class _FundsWidgetState extends State<FundsWidget> {
             child: Row(
               children: [
                 // Name
-                Text(thereArSpace ? (fund.friendlyName ?? '') : (fund.shortName ?? '')),
+                Text(
+                  thereArSpace
+                      ? (fund.friendlyName ?? '')
+                      : (fund.shortName ?? ''),
+                ),
                 const SizedBox(width: 4),
                 // Category
                 Visibility(
@@ -98,17 +102,20 @@ class _FundsWidgetState extends State<FundsWidget> {
                   child: Text(
                     fund.isSubscribed! ? "Cancelar" : "Suscribirse",
                     style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: fund.isSubscribed!
-                    ? Colors.red
-                    : const Color.fromARGB(255, 7, 119, 212),
+                      ? Colors.red
+                      : const Color.fromARGB(255, 7, 119, 212),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                   ),
@@ -116,7 +123,7 @@ class _FundsWidgetState extends State<FundsWidget> {
                 ),
               );
             },
-          )
+          ),
         ],
       ),
     );
@@ -126,10 +133,9 @@ class _FundsWidgetState extends State<FundsWidget> {
   bool thereAreWidthSpace() {
     final currentWidth = MediaQuery.of(context).size.width;
 
-    if(currentWidth < EnvironmentConfig.minWindowSpace) {
+    if (currentWidth < EnvironmentConfig.minWindowSpace) {
       return false;
-    }
-    else {
+    } else {
       return true;
     }
   }

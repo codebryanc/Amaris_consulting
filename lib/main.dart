@@ -5,14 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   // Multi Bloc Provider
-  runApp(MultiBlocProvider(
-    providers: [
-      BlocProvider<WelcomeBloc>(
-        create: (BuildContext context) => WelcomeBloc()
-      )
-    ],
-    child: const MyApp()
-  ));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<WelcomeBloc>(
+          create: (BuildContext context) => WelcomeBloc(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

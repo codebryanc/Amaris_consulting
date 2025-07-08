@@ -4,16 +4,15 @@ import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
 class FundLocalDatasource {
   // [Properties]
   static final FundLocalDatasource _instance = FundLocalDatasource._internal();
-  
-  
+
   // [Singleton]
   factory FundLocalDatasource() {
     return _instance;
   }
-  
+
   // [Private Constructor]
   FundLocalDatasource._internal();
-  
+
   // [Methods]
   List<FundEntity> getAvailableFunds() {
     return _funds;
@@ -22,11 +21,10 @@ class FundLocalDatasource {
   bool updateFund(FundEntity editedFund) {
     int index = _funds.indexWhere((i) => i.id == editedFund.id);
 
-    if(index != -1) {
+    if (index != -1) {
       _funds[index] = editedFund;
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
@@ -40,7 +38,7 @@ class FundLocalDatasource {
       shortName: "Recaudadora",
       minAmount: 75000,
       category: FundCategoryType.fpv,
-      isSubscribed: false
+      isSubscribed: false,
     ),
     // 2
     FundEntity(
@@ -50,7 +48,7 @@ class FundLocalDatasource {
       shortName: "Ecopetrol",
       minAmount: 125000,
       category: FundCategoryType.fpv,
-      isSubscribed: false
+      isSubscribed: false,
     ),
     // 3
     FundEntity(
@@ -60,7 +58,7 @@ class FundLocalDatasource {
       shortName: "Deuda privada",
       minAmount: 50000,
       category: FundCategoryType.fic,
-      isSubscribed: false
+      isSubscribed: false,
     ),
     // 4
     FundEntity(
@@ -70,7 +68,7 @@ class FundLocalDatasource {
       shortName: "Fondo de acciones",
       minAmount: 250000,
       category: FundCategoryType.fic,
-      isSubscribed: false
+      isSubscribed: false,
     ),
     // 5
     FundEntity(
@@ -80,8 +78,7 @@ class FundLocalDatasource {
       shortName: "Dinámica",
       minAmount: 100000,
       category: FundCategoryType.fpv,
-      isSubscribed: false
+      isSubscribed: false,
     ),
   ];
-
 }

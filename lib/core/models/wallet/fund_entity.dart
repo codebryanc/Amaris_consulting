@@ -10,7 +10,7 @@ class FundEntity {
     this.shortName,
     this.minAmount,
     this.category,
-    this.isSubscribed
+    this.isSubscribed,
   });
 
   int? id;
