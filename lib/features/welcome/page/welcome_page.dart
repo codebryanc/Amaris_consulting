@@ -1,3 +1,4 @@
+import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -54,7 +55,12 @@ class _WelcomePageState extends State<WelcomePage> {
             listenWhen: (previous, current) => current is WalletAskNotificationMethod,
             listener: (context, state) {
               if(state is WalletAskNotificationMethod) {
-                FundNotificationTypeWidget().showDialogNotificationMethod(context, state.fund);
+                FundNotificationTypeWidget().showDialogNotificationMethod(
+                  context,
+                  (FundNotificationMethodType type) => {
+                    // Update fund notification type
+                    context.read<WelcomeBloc>().add(DoChangeFundNotificationType(state.fund, type))
+                });
               }
             },
             child: BlocBuilder<WelcomeBloc, WelcomeState>(
@@ -86,6 +92,51 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
             ),
           ),
+          // Define notification method
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Choose notification method
+                ElevatedButton(
+                  onPressed: (){
+                    FundNotificationTypeWidget().showDialogNotificationMethod(
+                      context,
+                      (FundNotificationMethodType type) => {
+                        // Update fund notification type
+                        context.read<WelcomeBloc>().add(DoChangeAllFundNotificationType(type))
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    elevation: 2,
+                  ),
+                  child: Text(
+                    "Elegir metodo de notificaciones",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black)
+                  ),
+                ),
+                SizedBox(width: 8),
+                // Remove all previous selections
+                IconButton(
+                  onPressed: () {
+                    context.read<WelcomeBloc>().add(DoClearAllFundNotificationType());
+                  },
+                  icon: Icon(Icons.delete, color: Colors.red[400]),
+                )
+              ],
+            ),
+          ),
+          // sub-title
           Padding(
             padding: const EdgeInsets.only(
               top: 8.0,
@@ -102,8 +153,35 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
             ),
           ),
+          // Choose notification method
+          ElevatedButton(
+            onPressed: (){
+             
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              elevation: 2,
+            ),
+            child: Text(
+              "Ver historial de transacciones",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.white)
+            ),
+          ),
           // Fund list
-          FundsWidget(),
+          Padding(
+            padding: const EdgeInsets.all(40),
+            child: Card(
+              child: FundsWidget()
+            ),
+          ),
         ],
       ),
     );

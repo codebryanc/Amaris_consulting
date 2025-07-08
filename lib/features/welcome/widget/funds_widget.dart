@@ -1,11 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:amaris_consulting/core/config/environment_config.dart';
 import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
 import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
 import 'package:amaris_consulting/core/tools/currency_tool.dart';
 import 'package:amaris_consulting/features/common/widget/loading_widget.dart';
 import 'package:amaris_consulting/features/welcome/bloc/welcome_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FundsWidget extends StatefulWidget {
   const FundsWidget({super.key});
@@ -22,13 +23,16 @@ class _FundsWidgetState extends State<FundsWidget> {
       builder: (context, state) {
         if (state is WalletFundsLoaded) {
           // Show all fund available
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: state.funds.length,
-            itemBuilder: (BuildContext context, int index) {
-              return getFund(state.funds[index]);
-            },
+          return Padding(
+            padding: EdgeInsetsGeometry.symmetric(vertical: 25),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.funds.length,
+              itemBuilder: (BuildContext context, int index) {
+                return getFund(state.funds[index]);
+              },
+            ),
           );
         } else {
           return LoadingWidget().getLoading();
@@ -40,13 +44,14 @@ class _FundsWidgetState extends State<FundsWidget> {
   // [Widget]
   Widget getFund(FundEntity fund) {
     bool thereAreSpace = thereAreWidthSpace();
+    bool thereAreBigSpace = thereAreBigWidthSpace();
     IconData currentNotificationIcon = (fund.notificationMethodType == null) ? Icons.notifications_off_outlined : 
       (fund.notificationMethodType! == FundNotificationMethodType.email ? Icons.mark_email_unread_outlined : Icons.sms_outlined);
 
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: 8.0,
-        horizontal: thereAreSpace ? 45 : 8,
+        horizontal: thereAreSpace ? (thereAreBigSpace ? 125 : 45) : 8,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,6 +149,16 @@ class _FundsWidgetState extends State<FundsWidget> {
     final currentWidth = MediaQuery.of(context).size.width;
 
     if (currentWidth < EnvironmentConfig.minWindowSpace) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  bool thereAreBigWidthSpace() {
+    final currentWidth = MediaQuery.of(context).size.width;
+
+    if (currentWidth < EnvironmentConfig.minBigWindowSpace) {
       return false;
     } else {
       return true;

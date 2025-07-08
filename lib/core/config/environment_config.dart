@@ -4,5 +4,6 @@ class EnvironmentConfig {
   static double walletAtRisk = 51000;
 
   // [UX]
+  static int minBigWindowSpace = 1024;
   static int minWindowSpace = 620;
 }

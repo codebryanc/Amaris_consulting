@@ -17,6 +17,8 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     on<DoChangeSub>(_onDoChangeSub);
     on<DoClearNotification>(_onClearNotification);
     on<DoChangeFundNotificationType>(_onDoChangeFundNotificationType);
+    on<DoChangeAllFundNotificationType>(_onDoChangeAllFundNotificationType);
+    on<DoClearAllFundNotificationType>(_onDoClearAllFundNotificationType);
   }
 
   // [Methods]
@@ -54,16 +56,16 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
 
       // 3.1 Update UX - Wallet balance
       emit(WalletLoaded(currentWalletValue, getCurrentWalletColor(currentWalletValue)));
-    }
-    else {
+      
+      // 4 Request notification type
       if(event.fund.notificationMethodType == null) {
         // Please choose a Notification method
         emit(WalletAskNotificationMethod(event.fund));
       }
-      else {
-        // Ups! Emit error: the customer doesn't have enough money
-        emit(InsufficientFundsError());
-      }
+    }
+    else {
+      // Ups! Emit error: the customer doesn't have enough money
+      emit(InsufficientFundsError());
     }
   }
 
@@ -77,6 +79,22 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
   Future<void> _onDoChangeFundNotificationType(DoChangeFundNotificationType event, Emitter<WelcomeState> emit) async {
     // 1. Update Fund notification type to this subscribe
     FundDal().updateFundByNotificationType(event.fund, event.messageType);
+
+    // 2. Update button appearance [UX]
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
+  }
+
+  Future<void> _onDoChangeAllFundNotificationType(DoChangeAllFundNotificationType event, Emitter<WelcomeState> emit) async {
+    // 1. Update Fund notification type to this subscribe
+    FundDal().updateAllFundByNotificationType(event.messageType);
+
+    // 2. Update button appearance [UX]
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
+  }
+
+  Future<void> _onDoClearAllFundNotificationType(DoClearAllFundNotificationType event, Emitter<WelcomeState> emit) async {
+     // 1. Update Fund notification type to this subscribe
+    FundDal().updateAllFundByNotificationType(null);
 
     // 2. Update button appearance [UX]
     emit(WalletFundsLoaded(FundDal().getAvailableFunds()));
@@ -99,7 +117,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     double currentBalance = WalletDal().getWalletValue();
     
     // 1. Validate if the customer has enough money and if the operation is a subscription
-    result = currentFund.notificationMethodType != null && (currentFund.minAmount! <= currentBalance || isSubscribed);
+    result = (currentFund.minAmount! <= currentBalance || isSubscribed);
 
     return result;
   }

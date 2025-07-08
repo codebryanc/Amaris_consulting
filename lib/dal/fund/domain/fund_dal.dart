@@ -34,4 +34,9 @@ class FundDal {
     // Apply with repository
     return FundLocalDatasource().updateFund(editedFund);
   }
+
+  bool updateAllFundByNotificationType(FundNotificationMethodType? type) {
+    // Apply with repository
+    return FundLocalDatasource().editAllFund(type);
+  }
 }

@@ -20,3 +20,11 @@ class DoChangeFundNotificationType extends WelcomeEvent {
 
   DoChangeFundNotificationType(this.fund, this.messageType);
 }
+
+class DoChangeAllFundNotificationType extends WelcomeEvent {
+  final FundNotificationMethodType messageType;
+  
+  DoChangeAllFundNotificationType(this.messageType);
+}
+
+class DoClearAllFundNotificationType extends WelcomeEvent {}

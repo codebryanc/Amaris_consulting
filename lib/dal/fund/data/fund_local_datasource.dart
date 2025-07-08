@@ -1,5 +1,6 @@
 import 'package:amaris_consulting/core/models/wallet/fund_category_type.dart';
 import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
+import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
 
 class FundLocalDatasource {
   // [Properties]
@@ -27,6 +28,13 @@ class FundLocalDatasource {
     } else {
       return false;
     }
+  }
+
+  bool editAllFund(FundNotificationMethodType? notificationType) {
+    for (var fund in _funds) {
+      fund.notificationMethodType = notificationType;
+    }
+    return true;
   }
 
   final List<FundEntity> _funds = [
