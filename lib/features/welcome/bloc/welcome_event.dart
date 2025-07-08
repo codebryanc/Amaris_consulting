@@ -11,3 +11,5 @@ class DoChangeSub extends WelcomeEvent {
 
   DoChangeSub(this.fund);
 }
+
+class ClearNotification extends WelcomeEvent {}

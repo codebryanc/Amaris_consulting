@@ -13,6 +13,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     on<DoGetWalletBalance>(_onDoGetWallet);
     on<DoGetFundsAvailable>(_onGetFunds);
     on<DoChangeSub>(_onDoChangeSub);
+    on<ClearNotification>(_onClearNotification);
   }
 
   // [Methods]
@@ -38,38 +39,32 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     DoChangeSub event,
     Emitter<WelcomeState> emit,
   ) async {
-    double initWalletValue = WalletDal().getWalletValue();
-    bool isSubscribedAction = event.fund.isSubscribed!;
+    // 1. Validate if the customer has enough money and if the operation is a subscription
+    if(canOperate(event.fund, event.fund.isSubscribed!)) {
 
-    // 1. Validate if the customer has enough money
-    if (event.fund.minAmount! <= initWalletValue) {
-      // 2. We update the subscription value
-      event.fund.isSubscribed = !event.fund.isSubscribed!;
-      FundDal().updateOneFund(event.fund);
-
+      // 2. We update the subscription value [We change subscription value]
+      FundDal().updateOneFund(event.fund, !event.fund.isSubscribed!);
+      
       // 2.1 Update the current wallet value
-      if (isSubscribedAction == false) {
-        WalletDal().updateWalletAfterSubscribe(event.fund.minAmount!);
-      } else {
-        WalletDal().updateWalletAfterCancellation(event.fund.minAmount!);
-      }
+      double currentWalletValue = WalletDal().updateWalletSubscribe(event.fund.isSubscribed!, event.fund.minAmount!);
 
-      // 2.3 Read wallet result
-      double currentWalletValue = WalletDal().getWalletValue();
-
-      // 3. Update UX - Fund action
+      // 3. Update button appearance [UX]
       emit(FundActionLoaded(event.fund));
 
       // 3.1 Update UX - Wallet balance
-      emit(
-        WalletLoaded(
-          currentWalletValue,
-          getCurrentWalletColor(currentWalletValue),
-        ),
-      );
-    } else {
-      // Ups! Emit error: the customer doesn't have enough money
+      emit(WalletLoaded(currentWalletValue, getCurrentWalletColor(currentWalletValue)));
     }
+    else {
+      // Ups! Emit error: the customer doesn't have enough money
+      emit(InsufficientFundsError());
+    }
+  }
+
+  Future<void> _onClearNotification(
+    ClearNotification event,
+    Emitter<WelcomeState> emit
+  ) async {
+    emit(ClearFundsError());
   }
 
   // [Functions]
@@ -82,5 +77,15 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     } else {
       return Colors.green;
     }
+  }
+
+  bool canOperate(FundEntity currentFund, bool isSubscribed) {
+    bool result = false;
+    double currentBalance = WalletDal().getWalletValue();
+    
+    // 1. Validate if the customer has enough money and if the operation is a subscription
+    result = (currentFund.minAmount! <= currentBalance || isSubscribed);
+
+    return result;
   }
 }

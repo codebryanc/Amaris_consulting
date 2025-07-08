@@ -17,15 +17,17 @@ class WalletDal {
     return WalletLocalDatasource().getCurrentWalletValue();
   }
 
-  void updateWalletAfterSubscribe(double subscription) {
+  double updateWalletSubscribe(bool isSubscribedAction, double subscription) {
     double walletValue = getWalletValue();
 
-    WalletLocalDatasource().setCurrentWalletValue(walletValue - subscription);
-  }
+    if(isSubscribedAction) {
+      WalletLocalDatasource().setCurrentWalletValue(walletValue - subscription);
+    }
+    else {
+      WalletLocalDatasource().setCurrentWalletValue(walletValue + subscription);
+    }
 
-  void updateWalletAfterCancellation(double cancelValue) {
-    double walletValue = getWalletValue();
-
-    WalletLocalDatasource().setCurrentWalletValue(walletValue + cancelValue);
+    // Read the current balance again
+    return getWalletValue();
   }
 }

@@ -24,3 +24,7 @@ final class FundActionLoaded extends WelcomeState {
 
   FundActionLoaded(this.fund);
 }
+
+final class InsufficientFundsError extends WelcomeState {}
+
+final class ClearFundsError extends WelcomeState {}

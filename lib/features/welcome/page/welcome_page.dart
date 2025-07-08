@@ -1,5 +1,6 @@
 import 'package:amaris_consulting/core/tools/currency_tool.dart';
 import 'package:amaris_consulting/features/common/widget/loading_widget.dart';
+import 'package:amaris_consulting/features/common/widget/notification_widget.dart';
 import 'package:amaris_consulting/features/welcome/widget/funds_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,21 @@ class _WelcomePageState extends State<WelcomePage> {
         centerTitle: true,
       ),
       body: Column(
-        children: [
+        children: [   
+          // Notification widget for insufficient funds
+          BlocBuilder<WelcomeBloc, WelcomeState>(
+            buildWhen: (previous, current) => current is InsufficientFundsError || current is ClearFundsError,
+            builder: (context, state) {
+              if (state is InsufficientFundsError) {
+                return NotificationWidget.insufficientFunds(
+                  onClose: () {
+                    context.read<WelcomeBloc>().add(ClearNotification());
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           // Welcome title
           const Center(
             child: Padding(

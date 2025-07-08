@@ -1,7 +1,7 @@
 class EnvironmentConfig {
   // [Wallet]
-  static double walletLowBalance = 90000;
-  static double walletAtRisk = 31000;
+  static double walletLowBalance = 151000;
+  static double walletAtRisk = 51000;
 
   // [UX]
   static int minWindowSpace = 620;

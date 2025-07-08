@@ -43,7 +43,7 @@ class _FundsWidgetState extends State<FundsWidget> {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: 8.0,
-        horizontal: thereArSpace ? 64 : 8,
+        horizontal: thereArSpace ? 128 : 8,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,9 +55,9 @@ class _FundsWidgetState extends State<FundsWidget> {
               children: [
                 // Name
                 Text(
-                  thereArSpace
-                      ? (fund.friendlyName ?? '')
-                      : (fund.shortName ?? ''),
+                  thereArSpace ?
+                    (fund.friendlyName ?? '')
+                  : (fund.shortName ?? ''),
                 ),
                 const SizedBox(width: 4),
                 // Category

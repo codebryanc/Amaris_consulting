@@ -18,7 +18,11 @@ class FundDal {
     return FundLocalDatasource().getAvailableFunds();
   }
 
-  bool updateOneFund(FundEntity editedFund) {
+  bool updateOneFund(FundEntity editedFund, bool isSubscribed) {
+    // Update the entity information
+    editedFund.isSubscribed = isSubscribed;
+    
+    // Apply with repository
     return FundLocalDatasource().updateFund(editedFund);
   }
 }
