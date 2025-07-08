@@ -1,5 +1,5 @@
-import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
-import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
+import 'package:amaris_consulting/core/models/fund_entity.dart';
+import 'package:amaris_consulting/core/models/fund_notification_method_type.dart';
 import 'package:amaris_consulting/dal/fund/data/fund_local_datasource.dart';
 
 class FundDal {
@@ -19,10 +19,7 @@ class FundDal {
     return FundLocalDatasource().getAvailableFunds();
   }
 
-  bool updateFundBySubscribed(FundEntity editedFund, bool isSubscribed) {
-    // Update the entity information
-    editedFund.isSubscribed = isSubscribed;
-    
+  bool updateFundBySubscribed(FundEntity editedFund) {
     // Apply with repository
     return FundLocalDatasource().updateFund(editedFund);
   }

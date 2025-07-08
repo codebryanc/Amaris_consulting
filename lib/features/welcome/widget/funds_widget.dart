@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:amaris_consulting/core/config/environment_config.dart';
-import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
-import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
+import 'package:amaris_consulting/core/models/fund_entity.dart';
+import 'package:amaris_consulting/core/models/fund_notification_method_type.dart';
 import 'package:amaris_consulting/core/tools/currency_tool.dart';
 import 'package:amaris_consulting/features/common/widget/loading_widget.dart';
 import 'package:amaris_consulting/features/welcome/bloc/welcome_bloc.dart';

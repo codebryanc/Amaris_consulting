@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
+import 'package:amaris_consulting/dal/transaction/domain/transaction_dal.dart';
+import 'package:amaris_consulting/core/models/transaction_entity.dart';
 import 'package:amaris_consulting/core/config/environment_config.dart';
-import 'package:amaris_consulting/core/models/wallet/fund_entity.dart';
-import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
+import 'package:amaris_consulting/core/models/fund_entity.dart';
+import 'package:amaris_consulting/core/models/fund_notification_method_type.dart';
 import 'package:amaris_consulting/dal/fund/domain/fund_dal.dart';
 import 'package:amaris_consulting/dal/wallet/domain/wallet_dal.dart';
 
@@ -26,6 +28,8 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
   }
 
   // [Methods]
+
+  // Wallet
   Future<void> _onDoGetWallet(
     DoGetWalletBalance event,
     Emitter<WelcomeState> emit,
@@ -35,11 +39,12 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     emit(WalletLoaded(currentValue, getCurrentWalletColor(currentValue)));
   }
 
+  // Funds
   Future<void> _onGetFunds(
     DoGetFundsAvailable event,
     Emitter<WelcomeState> emit,
   ) async {
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
+    emitWalletFundsLoaded(emit);
   }
 
   Future<void> _onDoChangeSub(
@@ -50,13 +55,20 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     if(canOperate(event.fund, event.fund.isSubscribed!)) {
 
       // 2. We update the subscription value [We change subscription value]
-      FundDal().updateFundBySubscribed(event.fund, !event.fund.isSubscribed!);
-      
-      // 2.1 Update the current wallet value
+      FundEntity currentFund = event.fund;
+      currentFund.isSubscribed = !event.fund.isSubscribed!;
+
+      // 2.1 Update Fund information
+      FundDal().updateFundBySubscribed(currentFund);
+
+      // 2.2 Update the current wallet value
       double currentWalletValue = WalletDal().updateWalletSubscribe(event.fund.isSubscribed!, event.fund.minAmount!);
 
+      // 2.3 Save Fund transaction
+      TransactionDal().addTransactionRecord(currentFund, currentWalletValue);      
+
       // 3. Update button appearance [UX]
-      emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
+      emitWalletFundsLoaded(emit);
 
       // 3.1 Update UX - Wallet balance
       emit(WalletLoaded(currentWalletValue, getCurrentWalletColor(currentWalletValue)));
@@ -73,6 +85,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     }
   }
 
+  // Notifications
   Future<void> _onClearNotification(
     DoClearNotification event,
     Emitter<WelcomeState> emit
@@ -85,7 +98,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     FundDal().updateFundByNotificationType(event.fund, event.messageType);
 
     // 2. Update button appearance [UX]
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
+    emitWalletFundsLoaded(emit);
   }
 
   Future<void> _onDoChangeAllFundNotificationType(DoChangeAllFundNotificationType event, Emitter<WelcomeState> emit) async {
@@ -93,7 +106,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     FundDal().updateAllFundByNotificationType(event.messageType);
 
     // 2. Update button appearance [UX]
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
+    emitWalletFundsLoaded(emit);
   }
 
   Future<void> _onDoClearAllFundNotificationType(DoClearAllFundNotificationType event, Emitter<WelcomeState> emit) async {
@@ -101,13 +114,16 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     FundDal().updateAllFundByNotificationType(null);
 
     // 2. Update button appearance [UX]
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
+    emitWalletFundsLoaded(emit);
   }
 
+  // Visibility controls
   Future<void> _onDoToggleTransactionList(DoToggleTransactionList event, Emitter<WelcomeState> emit) async {
+    // Toggle visibility
     showTransactionList = !showTransactionList;
 
-    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList));
+    // Emit Fund list
+    emitWalletFundsLoaded(emit);
   }
 
   // [Functions]
@@ -130,5 +146,9 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     result = (currentFund.minAmount! <= currentBalance || isSubscribed);
 
     return result;
+  }
+
+  Future<void> emitWalletFundsLoaded(Emitter<WelcomeState> emit) async {
+    emit(WalletFundsLoaded(FundDal().getAvailableFunds(), showTransactionList, TransactionDal().getTransactions()));
   }
 }

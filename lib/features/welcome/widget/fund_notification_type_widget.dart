@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
+import 'package:amaris_consulting/core/models/fund_notification_method_type.dart';
 
 class FundNotificationTypeWidget {
   void showDialogNotificationMethod(BuildContext context, Function(FundNotificationMethodType) onMethodSelected) {

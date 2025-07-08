@@ -1,5 +1,5 @@
-import 'package:amaris_consulting/core/models/wallet/fund_category_type.dart';
-import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
+import 'package:amaris_consulting/core/models/fund_category_type.dart';
+import 'package:amaris_consulting/core/models/fund_notification_method_type.dart';
 
 class FundEntity {
   FundEntity.empty();

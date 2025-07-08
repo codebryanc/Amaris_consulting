@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
-import 'package:amaris_consulting/core/models/wallet/fund_notification_method_type.dart';
+import 'package:amaris_consulting/core/models/fund_notification_method_type.dart';
+import 'package:amaris_consulting/features/welcome/widget/transaction_history_widget.dart';
 import 'package:amaris_consulting/core/tools/currency_tool.dart';
 import 'package:amaris_consulting/features/common/widget/loading_widget.dart';
 import 'package:amaris_consulting/features/common/widget/notification_widget.dart';
@@ -201,12 +202,20 @@ class _WelcomePageState extends State<WelcomePage> {
                       ),
                     ),
                   ),
-                  // Transaction
+                  // Transaction Actions
                   Visibility(
                     visible: showTransactionList,
                     child: Padding(
                       padding: const EdgeInsets.all(40),
                       child: Card(child: FundsWidget()),
+                    )
+                  ),
+                  // Transaction History
+                  Visibility(
+                    visible: !showTransactionList,
+                    child: Padding(
+                      padding: const EdgeInsets.all(40),
+                      child: Card(child: TransactionHistoryWidget()),
                     )
                   ),
                 ],

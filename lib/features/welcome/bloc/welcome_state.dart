@@ -16,8 +16,9 @@ final class WalletLoaded extends WelcomeState {
 final class WalletFundsLoaded extends WelcomeState {
   final List<FundEntity> funds;
   final bool showTransactionList;
+  List<TransactionEntity> transactionList;
   
-  WalletFundsLoaded(this.funds, this.showTransactionList);
+  WalletFundsLoaded(this.funds, this.showTransactionList, this.transactionList);
 }
 
 final class InsufficientFundsError extends WelcomeState {}
