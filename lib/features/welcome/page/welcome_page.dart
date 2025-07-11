@@ -34,23 +34,28 @@ class _WelcomePageState extends State<WelcomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Expanded(
-          child: Row(
-            children: [
-              // Image
-              Image.asset('lib/core/assets/logo.png', height: 45),
-
-              // Your current wallet
-              const Spacer(),
-              // Wallet value
-              showCurrentWalletValue(context),
-            ],
-          ),
-        ),
+        title: Text("", style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal, color: Colors.black)),
         centerTitle: true,
       ),
       body: Column(
         children: [
+          // Header
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.symmetric(horizontal: 25),
+            child: Row(            
+              children: [
+                // Image
+                Image.network('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrU_1fXZ-NpNVA2egDnoqQ3q6X-1VY7GoOvg&s', height: 45),
+            
+                // Your current wallet
+                const Spacer(),
+            
+                // Wallet value
+                showCurrentWalletValue(context),
+              ],
+            ),
+          ),
           // Notification widget for insufficient funds
           BlocListener<WelcomeBloc, WelcomeState>(
             listenWhen: (previous, current) =>
